@@ -47,12 +47,15 @@ export default function AuthProvider({ children }) {
   }
 
   async function register(data) {
+    console.log(data);
     try {
       const record = await pb.collection("users").create(data);
       navigation.navigate("Login");
+      console.log(record);
     } catch (error) {
-      console.log(error.message);
-    }
+        console.log("Error details:", JSON.stringify(error, null, 2));
+      }
+      
   }
 
   async function logout() {
