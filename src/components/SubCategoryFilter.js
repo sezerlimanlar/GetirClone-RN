@@ -1,22 +1,22 @@
 import { View, Text, ScrollView, Dimensions } from "react-native";
 import React, { useEffect, useState } from "react";
 import { pb } from "../lib/pocketbase";
-import CategoryBox from "./CategoryBox";
+import SubCategoryBox from "./SubCategoryBox";
 
 const { width: screenWidth, height: ScreenHeight } = Dimensions.get("window");
 
-export default function CategoryFilter({ category, onCategorySelect }) {
-  const [categories, setCategories] = useState([]);
+export default function SubCategoryFilter({ category, onSubCategorySelect }) {
+  const [subcategories, setSubcategories] = useState([]);
   const [error, setError] = useState(null);
-  const [activeCategory, setActiveCategory] = useState(category.id);
+  const [activeSubcategoryId, setActiveSubcategoryId] = useState(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const records = await pb.collection("categories").getFullList({
-          sort: "+created",
+        const records = await pb.collection("subcategories").getFullList({
+          filter: `category = "${category.id}"`,
         });
-        setCategories(records);
+        setSubcategories(records);
       } catch (error) {
         setError(error.message);
         console.error("Error fetching sliders:", error);
@@ -24,24 +24,24 @@ export default function CategoryFilter({ category, onCategorySelect }) {
       }
     };
     fetchCategories();
-  }, []);
+  }, [category.id]);
 
   return (
     <ScrollView
-      className="w-full bg-getirClone2 px-4"
+      className="w-full bg-white px-4"
       horizontal={true}
       bounces={true}
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{ height: ScreenHeight * 0.065 }}
     >
-      {categories.map((item) => (
-        <CategoryBox
+      {subcategories.map((item) => (
+        <SubCategoryBox
+          item={item.name}
+          active={item.id === activeSubcategoryId}
           key={item.id}
-          active={activeCategory === item.id}
-          item={item}
           onPress={() => {
-            setActiveCategory(item.id);
-            onCategorySelect(item.id);
+            setActiveSubcategoryId(item.id);
+            onSubCategorySelect(item.id);
           }}
         />
       ))}

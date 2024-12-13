@@ -4,15 +4,21 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
 import GiftScreen from "../screens/GiftScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import LoginScreen from "../screens/LoginScreen";
 import SearchScreen from "../screens/SearchScreen";
 import { Entypo, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import CustomBarNavigation from "./CustomBarNavigation";
 import HomeNavigator from "./header/HomeNavigator";
 import StandartNavigator from "./header/StandartNavigator";
+import { useAuth } from "../context/AuthContext";
+import RegisterScreen from "../screens/RegisterScreen";
 
 const Tab = createBottomTabNavigator();
 
 export default function BottomNavigator() {
+  const { currentUser } = useAuth();
+
+  console.log(currentUser);
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -40,7 +46,11 @@ export default function BottomNavigator() {
         }}
       >
         {() => (
-          <StandartNavigator component={SearchScreen} name="search" textTitle="Arama" />
+          <StandartNavigator
+            component={SearchScreen}
+            name="search"
+            textTitle="Arama"
+          />
         )}
       </Tab.Screen>
 
@@ -52,19 +62,34 @@ export default function BottomNavigator() {
         }}
       />
 
-      <Tab.Screen
-        name="Profile"
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Entypo name="user" size={size} color={color} />
-          ),
-        }}
-      >
-        {() => (
-          <StandartNavigator component={ProfileScreen} name="profile" textTitle="Profil" />
-        )}
-      </Tab.Screen>
-
+      {currentUser ? (
+        <Tab.Screen
+          name="Profile"
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Entypo name="user" size={size} color={color} />
+            ),
+          }}
+        >
+          {() => (
+            <StandartNavigator
+              component={ProfileScreen}
+              name="profile"
+              textTitle="Profil"
+            />
+          )}
+        </Tab.Screen>
+      ) : (
+        <Tab.Screen
+          name="Login"
+          component={RegisterScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Entypo name="login" size={size} color={color} />
+            ),
+          }}
+        ></Tab.Screen>
+      )}
       <Tab.Screen
         name="Gift"
         options={{
