@@ -82,7 +82,7 @@ export default function BottomNavigator() {
       ) : (
         <Tab.Screen
           name="Login"
-          component={RegisterScreen}
+          component={LoginScreen}
           options={{
             tabBarIcon: ({ color, size }) => (
               <Entypo name="login" size={size} color={color} />

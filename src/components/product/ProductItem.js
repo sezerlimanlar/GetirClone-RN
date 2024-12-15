@@ -20,7 +20,7 @@ export default function ProductItem({ product }) {
     <TouchableOpacity
       style={{ width: screenWidth * 0.285, height: screenHeight * 0.3 }}
       className="mt-3 flex items-start mx-2 rounded-xl bg-white p-3"
-      onPress={() => navigation.navigate("ProductsDetail", { product })}
+      onPress={() => navigation.navigate("ProductDetail", { product })}
     >
       <Image
         source={{

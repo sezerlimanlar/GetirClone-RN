@@ -62,7 +62,7 @@ export default function AuthProvider({ children }) {
     try {
       await AsyncStorage.removeItem("pocketbase_auth");
       setCurrentUser(null);
-      navigation.navigate("Login");
+      navigation.navigate("BottomTabs", { screen: "Login" });
     } catch (error) {
       console.log(error.message);
     }

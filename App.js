@@ -7,15 +7,18 @@ import { NavigationContainer } from "@react-navigation/native";
 import BottomNavigator from "./src/navigators/BottomNavigator";
 import AppNavigator from "./src/navigators/AppNavigator";
 import AuthProvider from "./src/context/AuthContext";
+import CartProvider from "./src/context/CartContext";
 
 const Tab = createBottomTabNavigator();
 export default function App() {
   return (
     <NavigationContainer>
       <AuthProvider>
-        <StatusBar style="auto" />
-        <View className="mt-8"></View>
-        <AppNavigator />
+        <CartProvider>
+          <StatusBar style="auto" />
+          <View className="mt-8"></View>
+          <AppNavigator />
+        </CartProvider>
       </AuthProvider>
     </NavigationContainer>
   );

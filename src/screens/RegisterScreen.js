@@ -23,7 +23,7 @@ export default function RegisterScreen() {
   const navigation = useNavigation();
 
   async function handleLoginNavigate() {
-    navigation.navigate("Login");
+    navigation.navigate("BottomTabs", { screen: "Login" });
   }
 
   async function handleRegister() {

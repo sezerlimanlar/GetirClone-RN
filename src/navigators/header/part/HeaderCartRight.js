@@ -1,7 +1,11 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
+import { useNavigation } from '@react-navigation/native'
+import { useCart } from '../../../context/CartContext';
 
 export default function HeaderCartRight() {
+  const navigation = useNavigation();
+  const {total} = useCart();
   return (
     <TouchableOpacity
     onPress={() => navigation.navigate("Cart")}
@@ -12,7 +16,7 @@ export default function HeaderCartRight() {
       source={require("../../../../assets/cart.png")}
     />
     <View className="flex flex-col bg-[#F3EFFE] h-9 items-center justify-center">
-      <Text> {"\u20BA"}555</Text>
+      <Text> {"\u20BA"} {total.toFixed(2)}</Text>
     </View>
   </TouchableOpacity>
   )

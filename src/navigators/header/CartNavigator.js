@@ -4,10 +4,12 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
 import CartScreen from "../../screens/CartScreen";
 import { AntDesign } from "@expo/vector-icons";
+import { useCart } from "../../context/CartContext";
 
 const Stack = createStackNavigator();
 export default function CartNavigator() {
   const navigation = useNavigation();
+  const {clearCart} = useCart();
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -32,7 +34,7 @@ export default function CartNavigator() {
             </View>
           ),
           headerRight: () => (
-            <TouchableOpacity className="m-2  items-center justify-center">
+            <TouchableOpacity onPress={clearCart} className="m-2  items-center justify-center">
               <AntDesign name="delete" size={24} color="white" />
             </TouchableOpacity>
           ),
