@@ -2,10 +2,12 @@ import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { useCart } from "../context/CartContext";
 import { apiUrl } from "../lib/pocketbase";
+import { useNavigation } from "@react-navigation/native";
 
 export default function CartScreen() {
   const { cart, total, increaseQuantity, decreaseQuantity, deleteCartItem } =
     useCart();
+  const navigation = useNavigation();
   return (
     <View className="flex-1 bg-white">
       <ScrollView className="p-4">
@@ -77,7 +79,10 @@ export default function CartScreen() {
             {total} {"\u20BA"}
           </Text>
         </View>
-        <TouchableOpacity className="items-center justify-center p-4 rounded-xl bg-getirText">
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Checkout")}
+          className="items-center justify-center p-4 rounded-xl bg-getirText"
+        >
           <Text>Ödeme Yap</Text>
         </TouchableOpacity>
       </View>

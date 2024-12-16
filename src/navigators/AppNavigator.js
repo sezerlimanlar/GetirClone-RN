@@ -1,4 +1,4 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import BottomNavigator from "./BottomNavigator";
@@ -11,6 +11,8 @@ import HeaderCartRight from "./header/part/HeaderCartRight";
 import RegisterScreen from "../screens/RegisterScreen";
 import LoginScreen from "../screens/LoginScreen";
 import ProductDetailScreen from "../screens/ProductDetailScreen";
+import CheckoutScreen from "../screens/CheckoutScreen";
+import { AntDesign } from "@expo/vector-icons";
 
 const Stack = createStackNavigator();
 
@@ -64,6 +66,36 @@ export default function AppNavigator() {
       ></Stack.Screen>
 
       <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen
+        name="Checkout"
+        
+        component={CheckoutScreen}
+        options={{
+          headerShown: true,
+          headerTitleAlign: "center",
+          headerLeft: () => (
+            <TouchableOpacity
+              className="m-2"
+              onPress={() => navigation.goBack()}
+            >
+              <AntDesign name="close" size={24} color="white" />
+            </TouchableOpacity>
+          ),
+          headerStyle: {
+            backgroundColor: "#5C3EBC",
+          },
+          headerTitle: () => (
+            <View>
+               <Image
+                resizeMode="contain"
+                className="w-16 h-6"
+                source={require("../../assets/logo.png")}
+              />
+            </View>
+          ),
+         
+        }}
+      />
     </Stack.Navigator>
   );
 }

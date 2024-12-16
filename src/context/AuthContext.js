@@ -12,13 +12,15 @@ export default function AuthProvider({ children }) {
 
   useEffect(() => {
     async function fetchUser() {
-      const authData = await AsyncStorage.getItem("pocketbase_auth");
       try {
+        const authData = await AsyncStorage.getItem("pocketbase_auth");
         if (authData) {
           const { token, model } = JSON.parse(authData);
+          if (token && model) {
+            setCurrentUser(model);
+            pb.authStore.save(token, model); 
+          }
         }
-        console.log(token, model);
-        setCurrentUser(model);
       } catch (error) {
         console.log(error.message);
       } finally {
@@ -27,7 +29,7 @@ export default function AuthProvider({ children }) {
     }
     fetchUser();
   }, []);
-
+  
   async function login(email, password) {
     try {
       const record = await pb
