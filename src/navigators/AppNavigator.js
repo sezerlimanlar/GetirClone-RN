@@ -13,15 +13,47 @@ import LoginScreen from "../screens/LoginScreen";
 import ProductDetailScreen from "../screens/ProductDetailScreen";
 import CheckoutScreen from "../screens/CheckoutScreen";
 import { AntDesign } from "@expo/vector-icons";
+import OrderSuccessScreen from "../screens/OrderSuccessScreen";
+import { useNavigation } from "@react-navigation/native";
 
 const Stack = createStackNavigator();
 
 export default function AppNavigator() {
+  const navigation = useNavigation();
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="BottomTabs" component={BottomNavigator} />
 
       <Stack.Screen name="Cart">{() => <CartNavigator />}</Stack.Screen>
+
+      <Stack.Screen
+        name="OrderSuccess"
+        component={OrderSuccessScreen}
+        options={{
+          headerShown: true,
+          headerTitleAlign: "center",
+          headerLeft: () => (
+            <TouchableOpacity
+              className="m-2"
+              onPress={() => navigation.goBack()}
+            >
+              <AntDesign name="close" size={24} color="white" />
+            </TouchableOpacity>
+          ),
+          headerStyle: {
+            backgroundColor: "#5C3EBC",
+          },
+          headerTitle: () => (
+            <View>
+              <Image
+                resizeMode="contain"
+                className="w-16 h-6"
+                source={require("../../assets/logo.png")}
+              />
+            </View>
+          ),
+        }}
+      />
 
       <Stack.Screen
         name="CategoryDetail"
@@ -68,7 +100,6 @@ export default function AppNavigator() {
       <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen
         name="Checkout"
-        
         component={CheckoutScreen}
         options={{
           headerShown: true,
@@ -86,14 +117,13 @@ export default function AppNavigator() {
           },
           headerTitle: () => (
             <View>
-               <Image
+              <Image
                 resizeMode="contain"
                 className="w-16 h-6"
                 source={require("../../assets/logo.png")}
               />
             </View>
           ),
-         
         }}
       />
     </Stack.Navigator>

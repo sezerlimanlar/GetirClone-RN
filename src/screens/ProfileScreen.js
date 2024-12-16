@@ -19,7 +19,7 @@ export default function ProfileScreen() {
           <View className="mt-11 ">
             <Text>Name: {currentUser.name}</Text>
             <Text>Email: {currentUser.email}</Text>
-            <Button title="Çıkış" onPress={logout}></Button>
+            <Button title="Çıkış" onPress={handleLogout}></Button>
           </View>
         </>
       ) : (

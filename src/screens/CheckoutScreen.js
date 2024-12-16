@@ -3,6 +3,8 @@ import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useCart } from "../context/CartContext";
 import { Button, Card, TextInput } from "react-native-paper";
+import { pb } from "../lib/pocketbase";
+import { useNavigation } from "@react-navigation/native";
 
 export default function CheckoutScreen() {
   const {
@@ -10,10 +12,104 @@ export default function CheckoutScreen() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { total } = useCart();
+  const { total, cart, clearCart } = useCart();
+  const navigation = useNavigation();
 
-  function onSubmit(data) {
-    console.log(data); // Form verisini buraya işle
+  async function onSubmit(data) {
+    console.log(data);
+
+    const [expireMonth, expireYear] = data.cardDate.split("/");
+    const paymentCard = {
+      cardHolderName: data.cardName,
+      cardNumber: data.cardNumber,
+      expireMonth: expireMonth,
+      expireYear: expireYear,
+      cvc: data.cardCvc,
+      registeredCard: "0",
+    };
+
+    const [name, surname] = data.name.split(" ");
+
+    const buyer = {
+      id: "BY123",
+      name: name,
+      surname: surname,
+      gsmNumber: data.telefon,
+      email: "test@test.com",
+      identityNumber: "12345678901",
+      lastLoginDate: "2024-12-01 10:00:00",
+      registrationDate: "2023-12-01 10:00:00",
+      registrationAddress: data.address,
+      ip: "85.34.72.112",
+      city: "Izmir",
+      country: "Turkey",
+      zipCode: "35000",
+    };
+
+    shippingAddress = {
+      address: data.address,
+      zipCode: "35000",
+      contactName: data.name,
+      city: "Izmir",
+      country: "Turkey",
+    };
+
+    billingAddress = {
+      address: data.address,
+      zipCode: "35000",
+      contactName: data.name,
+      city: "Izmir",
+      country: "Turkey",
+    };
+    const basketItems = cart.map((item) => ({
+      id: item.expand.product.id,
+      name: item.expand.product.name,
+      category1: "Kategori 1",
+      category2: "Kategori 2",
+      price: item.expand.product.sellingPrice * item.quantity,
+      itemType: "PHYSICAL",
+    }));
+
+    const paymentData = {
+      price: total,
+      paidPrice: total,
+      currency: "TRY",
+      basketId: "B67832",
+      paymentCard: paymentCard,
+      buyer: buyer,
+      shippingAddress: shippingAddress,
+      billingAddress: billingAddress,
+      basketItems: basketItems,
+    };
+
+    try {
+      const response = await fetch(
+        "https://genuine-crappie-sensible.ngrok-free.app/api/payment",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(paymentData),
+        }
+      );
+
+      const result = await response.json();
+      const formData = {
+        fullname: data.name,
+        adres: data.address,
+        telefon: data.telefon,
+        cart: cart,
+      };
+      console.log(formData);
+      const record = await pb.collection("order").create(formData);
+
+      console.log("success");
+      clearCart();
+      navigation.navigate("OrderSuccess")
+    } catch (error) {
+      console.log("ERRORRR ", error);
+    }
   }
 
   return (
@@ -47,7 +143,7 @@ export default function CheckoutScreen() {
           )}
 
           <Controller
-            name="phone"
+            name="telefon"
             control={control}
             rules={{
               required: "Telefon numarası zorunludur",
@@ -62,14 +158,14 @@ export default function CheckoutScreen() {
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value || ""}
-                error={!!errors.phone}
+                error={!!errors.telefon}
                 mode="outlined"
                 keyboardType="phone-pad"
               />
             )}
           />
-          {errors.phone && (
-            <Text className="text-red-500 mt-1">{errors.phone.message}</Text>
+          {errors.telefon && (
+            <Text className="text-red-500 mt-1">{errors.telefon.message}</Text>
           )}
 
           <Controller
@@ -170,30 +266,30 @@ export default function CheckoutScreen() {
             </View>
             <View className="w-1/2">
               <Controller
-                name="cardCvv"
+                name="cardCvc"
                 control={control}
                 rules={{
-                  required: "CVV alanı zorunludur",
+                  required: "CVc alanı zorunludur",
                   pattern: {
                     value: /^[0-9]{3}$/,
-                    message: "Geçersiz CVV",
+                    message: "Geçersiz CVc",
                   },
                 }}
                 render={({ field: { onBlur, onChange, value } }) => (
                   <TextInput
-                    label="CVV"
+                    label="CVC"
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value || ""}
-                    error={!!errors.cardCvv}
+                    error={!!errors.cardCvc}
                     mode="outlined"
                     keyboardType="number-pad"
                   />
                 )}
               />
-              {errors.cardCvv && (
+              {errors.cardCvc && (
                 <Text className="text-red-500 mt-1">
-                  {errors.cardCvv.message}
+                  {errors.cardCvc.message}
                 </Text>
               )}
             </View>
